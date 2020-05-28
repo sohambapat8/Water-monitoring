@@ -1,2 +1,2 @@
-# Water-monitoring
-A water monitoring system written in Arduino C
+# Water Monitoring
+A water monitoring system written in Arduino C, on behalf of Atlantic Pacific.
