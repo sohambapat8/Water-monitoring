@@ -9,12 +9,11 @@ void loop() {
 
   float totalvalue = 0;
 
-  for(int i=0; i<20; i++){
+  for(int i=0; i<50; i++){
     totalvalue+=analogRead(phsensor);
-    delay(50);
   }
 
-  float phvalue = 3.5*totalvalue*5.0/1024/20; //converting the total value to mmillivolt then pH.
+  float phvalue = 3.5*totalvalue*5.0/1024/50; //converting the total value to mmillivolt then pH.
 
   Serial.print("pH level is ");
   Serial.print(phvalue,2); //output to 2 d.p.
