@@ -1,0 +1,121 @@
+#include <Wire.h>
+#include <Adafruit_SSD1306.h>
+#include <Adafruit_GFX.h>
+
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+#define OLED_RESET     4 // Reset pin # (or -1 if sharing Arduino reset pin)
+
+#define OLED_ADDR 0x3D //I2C address of OLED
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+
+/*
+
+*/
+
+//Define pin numbers
+const int trigPin = 9;
+const int echoPin = 10;
+
+//Define variables
+long duration;
+double distance;
+double percentage;
+//double width;
+//double height;
+int percentage_int;
+int percentage_display;
+
+void setup() {
+    pinMode(trigPin, OUTPUT); //Set trigPin as Output
+    pinMode(echoPin, INPUT); //Set echoPin as Input
+    //Serial.begin(9600);
+    
+    display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
+    display.clearDisplay();
+
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0);
+    display.println("Water Level Sensor");
+    display.println("Shows:");
+    display.println("- Distance");
+    display.println("- Percentage of tank full");
+  
+    display.display();
+
+    delay(5000);
+}
+
+void loop() {
+  //Clear trigPin
+   digitalWrite(trigPin, LOW); 
+   delayMicroseconds(2);
+   
+   //Set trigPin high for 10ms
+   digitalWrite(trigPin, HIGH);
+   delayMicroseconds(10);
+   digitalWrite(trigPin, LOW);
+   
+   //Read echoPin to get time*2 (as it's time for there and back)
+   duration = pulseIn(echoPin, HIGH);
+   
+   
+   
+   //Calculate distance
+   distance = duration*0.034/2;
+
+   //Calculate percentage of total distance (change divide number as necessary)
+   percentage = distance*100/17;
+  
+   //Calculate percentage which tank is full
+   percentage_int = 100 - percentage;
+   
+   //Calculate amount of pixels needed for display bar
+   percentage_display = ((100-percentage)*128/100)-1;
+
+   
+  
+   display.clearDisplay();
+   //Display text on the OLED
+   /*display.setTextSize(1);
+   display.setTextColor(WHITE);
+   display.setCursor(0,0);
+   display.print("Distance: ");
+   display.print(distance);
+   display.println("cm");
+   display.print("Percentage: ");
+   display.print(percentage);
+   display.println("%");
+   if(percentage < 50){
+    display.println("Needs filling");
+   }*/
+
+   
+   //Progress bar to show how much the tank is filled and percentage displayed underneath
+   display.fillRect(0, 0, percentage_display, 30, WHITE); //In form width, height
+   display.setTextSize(1);
+   display.setTextColor(WHITE);
+   display.setCursor(0,35);
+   display.print("Percentage full: ");
+   display.print(percentage_int);
+   display.println("% ");
+   
+
+   
+   
+   display.display();
+   delay(500);
+  
+    
+  //Print on the serial port monitor
+  //Serial.print("Distance: ");
+  //Serial.print(distance);
+  //Serial.println("cm");
+  
+}
